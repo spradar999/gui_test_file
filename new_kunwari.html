@@ -1,0 +1,216 @@
+
+<!-- Copy and Save as .html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kunwari - Before & After</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      overflow-y: auto;
+      height: auto;
+      text-align: center;
+    }
+    .wrapper {
+        width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0px;
+    }
+    .container {
+      width: 100%;
+      background-color: #111;
+      padding: 2px 0;
+    }
+    .image-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: auto;
+    }
+    .image1, .image2 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .image2 {
+      clip-path: inset(100% 0 0 0);
+    }
+    .slider-bar {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      background-color: black;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .label {
+       position: absolute;
+            color: white;
+            font-weight: bold;
+            background-color: rgba(0, 0, 0);
+            padding: 5px 10px;
+            margin: 0;
+            border-radius: 5px;
+            font-size: 9px;
+            transform: translateX(-50%);
+            transition: opacity 0.2s ease;
+            left: 20%;
+    }
+      button {
+            background-color: #ffcc00;
+            border: none;
+            color: #111;
+            font-weight: bold;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+    h3 {
+      color: #ffcc00;
+      margin: 0;
+    }
+    ul {
+      padding-left: 20px;
+      list-style-position: outside;
+    }
+    .text-content {
+      width: 100%;
+      max-width: 800px;
+      padding: 2px;
+      text-align: justify;
+      word-wrap: break-word;
+      box-sizing: border-box;
+      padding-bottom: 120px;
+    }
+    .swipe-text {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .image-container {
+        height: 400px;
+        max-height: 60vh;
+      }
+      .text-content {
+        max-width: 90%;
+        font-size: 14px;
+        padding-bottom: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <h3 class="title">Kunwari</h3>
+      <h3 class="title">(Bageswara)</h3>
+
+      <div class="image-container">
+        <img src="after.png" class="image1">
+        <img src="before.png" class="image2">
+        <div class="slider-bar"></div>
+        <div class="label before">POST: CARTOSAT2 November 24th 2024</div>
+        <div class="label after">PRE: RS 2 April 15th, 2024</div>
+      </div>
+      <p class="swipe-text">(Swipe up or down to see the visualization)</p>
+    </div>
+
+    <div class="text-content" id="text-content">
+      <p><b>In Brief</b></p>
+      <ul><li><i>The Kunwari landslide is situated on the right bank of the Baura Gad, a tributary of Pindar River in Bagehswar District</i></li>
+<li><i>This barrier lake has been observed to intermittently form and drain since 2014</i></li>
+<li><i>In 2022, the landslide reactivated again along a pre-existing slope break, a zone of inherent weakness, blocking a tributary of the Pindar River in April and June</i></li></ul>
+      <p>The Kunwari landslide is situated on the right bank of the Baura Gad, a tributary of Pindar River in Bagehswar District
+This barrier lake has been observed to intermittently form and drain since 2014
+In 2022, the landslide reactivated again along a pre-existing slope break, a zone of inherent weakness, blocking a tributary of the Pindar River in April and June</p>
+      <button onclick="readText()">🔊 Read Summary</button>
+    </div>
+  </div>
+</body>
+<script>
+    let isDragging = false;
+    let startY = 0;
+    let position = 50;
+    const imageContainer = document.querySelector('.image-container');
+    const image2 = document.querySelector('.image2');
+    const sliderBar = document.querySelector('.slider-bar');
+    const beforeLabel = document.querySelector('.label.before');
+    const afterLabel = document.querySelector('.label.after');
+
+    function updateClipPath() {
+      image2.style.clipPath = `inset(${position}% 0 0 0)`;
+      sliderBar.style.top = `${position}%`;
+      beforeLabel.style.top = `${position - 5}%`;
+      afterLabel.style.top = `${position + 5}%`;
+    }
+
+    function startDrag(event) {
+      if (!event.target.closest('.image-container')) return;
+      isDragging = true;
+      startY = event.clientY || event.touches[0].clientY;
+      event.preventDefault();
+    }
+
+    function dragMove(event) {
+      if (!isDragging) return;
+      let moveY = event.clientY || event.touches[0].clientY;
+      let diff = startY - moveY;
+      position = Math.max(0, Math.min(100, position - diff / 5));
+      updateClipPath();
+      startY = moveY;
+      event.preventDefault();
+    }
+
+    function endDrag() {
+      isDragging = false;
+    }
+
+    imageContainer.addEventListener('mousedown', startDrag);
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', endDrag);
+
+    imageContainer.addEventListener('touchstart', startDrag);
+    document.addEventListener('touchmove', dragMove, { passive: false });
+    document.addEventListener('touchend', endDrag);
+
+    document.addEventListener('wheel', (event) => {
+      if (!event.target.closest('.image-container')) return;
+      event.preventDefault();
+      position = Math.max(0, Math.min(100, position + (event.deltaY > 0 ? 2 : -2)));
+      updateClipPath();
+    }, { passive: false });
+
+    updateClipPath();
+
+     // Text-to-Speech function
+        function readText() {
+            const content = document.getElementById('text-content').innerText;
+            const utterance = new SpeechSynthesisUtterance(content);
+            utterance.lang = 'en-IN';
+            utterance.rate = 1.25; // 1.5x speed
+            speechSynthesis.cancel(); // Stop previous speech
+            speechSynthesis.speak(utterance);
+        }
+  </script>
+
+</html>
